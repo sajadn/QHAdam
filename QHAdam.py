@@ -74,7 +74,8 @@ class QHAdam(Optimizer):
             v_t_adj = v_t/(1. - K.pow(self.beta_2, t))
             if self.amsgrad:
                 vhat_t = K.maximum(vhat, v_t)
-                p_t = p - lr * m_t / (K.sqrt(vhat_t) + self.epsilon)
+                p_t = p - lr * ((1.- self.neu_1)*g + self.neu_1*(m_t_adj)) / \
+                       (K.sqrt((1.-self.neu_2) * K.square(g) + self.neu_2 * vhat_t) + self.epsilon)
                 self.updates.append(K.update(vhat, vhat_t))
             else:
                 p_t = p - lr * ((1.-self.neu_1)*g + self.neu_1*(m_t_adj)) / \
